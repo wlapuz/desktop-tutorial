@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claim Review and Management Tool</title>
+    <link rel="stylesheet" href="mukha.css"> 
+    <script type="module" src="front.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="left">
+            <div class="upper">
+                <div class="box">
+                    <div class="title-bar">
+                        <span id="inputTitle" class="title">Input</span>
+                        <button id="fillButton">Test Fill</button>
+                        <button id="fill2Button">Test Fill 2</button>
+                        <button class="clear-btn">Clear</button>
+                    </div>
+                    <div class="content-wrapper">
+                        <textarea id="xInput"></textarea>
+                        <div id="xResult" class="result-grid"></div>
+                        <div id="clickToPasteOverlay" class="click-to-paste-overlay">Click to Paste CCS and CA</div>
+                    </div>
+                </div>
+                <div class="box">
+                    <div class="title-bar">
+                        <span class="title">Analysis & Insights</span> <button id="refreshOutput" title="Refresh Output">✔️</button>
+                        <div id="selectAllContainer" style="display: none;">
+                            <button id="selectAll">Select All</button>
+                            <div id="selectAllActions" style="display: none;">
+                                <button id="selectNotNeeded">Not Needed</button>
+                                <button id="selectMoreInfo">More Info</button>
+                                <button id="selectGreenFlags" style="display: none;">Green</button>
+                                <button id="selectBack">Back</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="content result-wrapper">
+                        <textarea id="xAnalysis" placeholder="Analysis will appear here..."></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="box shortcut-buttons" style="grid-area: center;">
+                <button class="shortcut">S1</button>
+                <button class="shortcut">S2</button>
+                <button class="shortcut">S3</button>
+                <button class="shortcut">S4</button>
+                <button class="shortcut">S5</button>
+                <button class="shortcut">S6</button>
+                <button class="shortcut">S7</button>
+                <button class="shortcut">S8</button>
+                <button class="shortcut">S9</button>
+                <button id="customizeShortcuts">⚙️</button>
+            </div>
+            <div class="box">
+                <div class="title-bar">
+                    <span class="title">Decision and Conclusion</span>
+                    <div id="bigsteppers" class="button-container">
+                        <button class="button" data-action="MI" style="background-color: #706712;">More Info<span class="step-indicator" style="background-color: #ba9ce0;">Step 3</span></button>
+                        <button class="button" data-action="CI" style="background-color: #751a1a;">Claim Invalid<span class="step-indicator" style="background-color: #ba9ce0;">Step 3</button>
+                        <button class="button" data-action="CV" style="background-color: #075e2b;">Claim Valid<span class="step-indicator" style="background-color: #ba9ce0;">Step 3</span></button>
+                        <button id="resetButton" style="display: none;">↻</button>
+                        <button class="button" data-action="RE" style="background-color: #706712;">Rework <span class="step-indicator" style="background-color: #4a9be6;">Step 4</span></button>
+                        <button class="button" data-action="AP" style="background-color: #075e2b;">Approve <span class="step-indicator" style="background-color: #4a9be6;">Step 4</span></button>
+                        <button class="button" data-action="CC" style="background-color: #751a1a;">Close <span class="step-indicator" style="background-color: #69e6d5;">Step 5</span></button>
+                        <button class="button" data-action="FI" style="background-color: #075e2b;">To be Finalized <span class="step-indicator" style="background-color: #69e6d5;">Step 5</span></button>
+                    </div>
+                </div>
+                <div class="content decision-wrapper">
+                    <textarea id="xD" placeholder="Enter your decision and conclusion here..."></textarea>
+                    <div id="xDO" placeholder="Decision overview will appear here..."></div>
+                </div>
+            </div>
+        </div>
+        <div class="right">
+            <div class="box">
+                <div class="title-bar">
+                    <span class="title">Output</span>
+                    <button class="copy-btn">Copy</button>
+                    </div>
+                <div class="content output-wrapper">
+                    <div id="xOutput" contenteditable="true">
+                        <h1 contenteditable="false">IM Working on CCS Approvals</h1>
+                        <h2 contenteditable="false">Step 1: Assessment</h2>
+                        <div id="step1Content"></div>
+                        <h2 contenteditable="false">Step 2: Findings</h2>
+                        <div id="step2Content"></div>
+                        <h2 contenteditable="false">Step 3: Decision</h2>
+                        <div id="step3Content"></div>
+                        <h2 contenteditable="false">Step 4: Claim Resolution Action</h2>
+                        <div id="step4Content"></div>
+                        <h2 contenteditable="false">Step 5: Next steps (If applicable)</h2>
+                        <div id="step5Content"></div>
+                      </div>
+                </div>
+            </div>
+            <div class="side">
+                <div class="box">
+                    <div class="title-bar">
+                        <span class="title">Actions</span>
+                    </div>
+                    <div class="content action-buttons">
+                        <button style="height:50px;" id="log-claim-btn">Log Claim</button>
+                        <button style="height:50px;" id="timer">00:00</button>
+                        <div id="timerSegments">
+                            <button id="timer.break">Break</button>
+                            <button id="timer.lunch">Lunch</button>
+                            <button id="timer.coaching">Coaching</button>
+                            <button id="timer.training">Training</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="stats">
+                    <div class="box">
+                        <div class="title-bar">
+                            <span class="title">Goal to Hourly Interval</span>
+                        </div>
+                        <div class="content" id="hourly-goal">Goal content here</div>
+                    </div>
+                    <div class="box">
+                        <div class="title-bar">
+                            <span class="title">Avg Hourly</span>
+                        </div>
+                        <div class="content" id="avg-hourly">Avg Hourly content here</div>
+                    </div>
+                    <div class="box">
+                        <div class="title-bar">
+                            <span class="title">Recent Claims</span>
+                        </div>
+                        <div class="content" id="recent-claims">Recent Claims content here</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="logs-popup" class="popup">
+        <button class="close-popup">Close</button>
+        <div class="popup-content">
+            <h2>All Logs</h2>
+            <p>Logs content goes here...</p>
+        </div>
+    </div>
+
+    <script src="path/to/productivity.js"></script>
+
+    <script>
+        // Timer functionality
+const timerElement = document.getElementById('timer');
+const logClaimButton = document.getElementById('log-claim');
+const xInput = document.getElementById('xInput');
+const clickToPasteOverlay = document.getElementById('clickToPasteOverlay');
+
+let timerInterval, seconds = 0;
+const maxSeconds = 7 * 60; // 7 minutes
+let isPaused = false;
+
+function startTimer() {
+    if (!timerInterval) {
+        timerInterval = setInterval(updateTimer, 1000);
+        timerElement.classList.add('active');
+        timerElement.classList.remove('paused');
+        isPaused = false;
+    }
+}
+
+function pauseTimer() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    timerElement.classList.remove('active');
+    timerElement.classList.add('paused');
+    isPaused = true;
+}
+
+function stopTimer() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    seconds = 0;
+    timerElement.textContent = '00:00';
+    timerElement.style.background = 'none';
+    timerElement.style.color = 'var(--text)';
+    timerElement.classList.remove('active', 'paused');
+    isPaused = false;
+}
+
+function updateTimer() {
+    if (!isPaused) {
+        seconds++;
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        timerElement.textContent = `${padZero(minutes)}:${padZero(remainingSeconds)}`;
+
+        const progress = (seconds / maxSeconds) * 100;
+
+        let gradientColor = '#90EE90'; // Light Green (initial color)
+        if (progress > 60) {
+            gradientColor = '#FFFF00'; // Yellow (from 60% to 100%)
+        }
+        if (seconds >= maxSeconds) {
+            gradientColor = '#FF0000'; // Red (at 100%)
+        }
+
+        timerElement.style.background = `linear-gradient(to right, ${gradientColor}, ${gradientColor} ${progress}%, var(--secondary) ${progress}%)`;
+        timerElement.style.boxShadow = `0 0 10px ${gradientColor}`;
+        timerElement.style.borderColor = gradientColor;
+
+        // Pulse animation every 5 seconds
+        if (seconds % 5 === 0) {
+            timerElement.classList.add('pulse');
+            setTimeout(() => {
+                timerElement.classList.remove('pulse');
+            }, 1000);
+        }
+    }
+}
+
+function padZero(num) {
+    return num.toString().padStart(2, '0');
+}
+
+// Event Listeners
+clickToPasteOverlay.addEventListener('click', startTimer);
+
+xInput.addEventListener('input', () => {
+    if (xInput.value.trim() !== '') {
+        startTimer();
+    }
+});
+
+timerElement.addEventListener('click', () => {
+    if (timerInterval) {
+        pauseTimer();
+    } else if (isPaused) {
+        startTimer();
+    } else {
+        startTimer();
+    }
+});
+
+// Add this to your existing CSS
+const style = document.createElement('style');
+style.textContent = `
+    #timer {
+        transition: background 0.3s, box-shadow 0.3s, color 0.3s;
+    }
+    #timer.active {
+        color: var(--bg);
+    }
+    #timer.paused {
+        opacity: 0.7;
+    }
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+    #timer.pulse {
+        animation: pulse 0.5s ease-in-out;
+    }
+`;
+document.head.appendChild(style);
+
+    </script>
+
+    <button id="colorSchemeToggle" style="position: fixed; top: 20px; right: 20px;">☀️</button>
+</body>
+</html>

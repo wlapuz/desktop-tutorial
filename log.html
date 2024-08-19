@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claim Logs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>All Claim Logs</h1>
+    <table id="logsTable">
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>Claim Number</th>
+                <th>Scenario</th>
+                <th>Action</th>
+                <th>Duration</th>
+            </tr>
+        </thead>
+        <tbody id="logsTableBody"></tbody>
+    </table>
+
+    <script>
+        const logsTableBody = document.getElementById('logsTableBody');
+        const claimLogs = JSON.parse(localStorage.getItem('claimLogs')) || [];
+
+        claimLogs.forEach(log => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${new Date(log.timestamp).toLocaleString()}</td>
+                <td>${log.claimNumber}</td>
+                <td>${log.claimScenario}</td>
+                <td>${log.action}</td>
+                <td>${Math.floor(log.duration / 60)} mins</td>
+            `;
+            logsTableBody.appendChild(row);
+        });
+    </script>
+</body>
+</html>
