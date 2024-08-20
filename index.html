@@ -1,0 +1,321 @@
+<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Claim Review and Management Tool</title><link rel="stylesheet" href="mukha.css"><script src="https://cdn.jsdelivr.net/npm/chart.js"></script><script defer="defer" src="bundle.js"></script></head><body><div id="buttonModal" class="modal"><div class="modal-content"><span class="close">&times;</span><h2 id="modalTitle">Add New Button</h2><div class="form-group"><label for="buttonTitle">Button Title:</label> <input id="buttonTitle" required maxlength="10"></div><div class="form-group"><label for="buttonContent">Button Content:</label><br><textarea id="buttonContent" rows="4" cols="10"></textarea></div><div class="form-group"><label for="buttonColor">Button Color:</label> <select id="buttonColor"><option value="#4d0000">Red</option><option value="#00254d">Blue</option><option value="var(--green-bg)">Green</option><option value="var(--warning-bg)">Yellow</option><option value="#1e004d">Purple</option></select></div><div class="form-group"><label for="shortcutKey">Shortcut Key:</label> <select id="shortcutKey"><option value="Alt+1">Alt+1</option><option value="Alt+2">Alt+2</option><option value="Alt+3">Alt+3</option><option value="Alt+4">Alt+4</option><option value="F1">F1</option><option value="F2">F2</option><option value="F3">F3</option><option value="F4">F4</option></select></div><button id="saveButton" class="save-button">Save</button></div></div><div class="container"><div class="left"><div class="upper"><div class="box"><div class="title-bar"><span id="inputTitle" class="title">Input</span> <button id="fillButton">Test</button> <button id="fill2Button">Test</button></div><div class="content-wrapper"><textarea id="xInput"></textarea><div id="xResult" class="result-grid"></div><div id="clickToPasteOverlay" class="click-to-paste-overlay">Click to Paste CCS and CA</div></div></div><div class="box"><div class="title-bar"><span class="title">Analysis & Insights</span> <button id="refreshOutput" title="Refresh Output">✔️</button><div id="selectAllContainer" style="display: none!important;"><button id="selectAll">Select All</button><div id="selectAllActions" style="display: none;"><button id="selectNotNeeded">Not Needed</button> <button id="selectMoreInfo">More Info</button> <button id="selectGreenFlags" style="display: none;">Green</button> <button id="selectBack">Back</button></div></div></div><div class="content result-wrapper"><textarea id="xAnalysis" placeholder="Analysis will appear here..."></textarea></div></div></div><div class="box shortcut-buttons" style="grid-area: center;"><div id="buttonContainer" class="button-container"><button id="addButton" class="add-button">+</button> <button id="gearButton" class="gear-button">⚙️</button></div><div id="errorMessage" class="error"></div></div><div class="box"><div class="title-bar"><span class="title">Decision and Conclusion</span><div id="bigsteppers" class="button-containerings"><button class="button" data-action="MI" style="background-color: var(--warning-bg); color:var(--warning-text)">More Info<span class="step-indicator" style="background-color: #ba9ce0;">Step 3</span></button> <button class="button" data-action="CI" style="background-color: var(--red-bg); color:var(--red-text)">Claim Invalid<span class="step-indicator" style="background-color: #ba9ce0;">Step 3</span></button> <button class="button" data-action="CV" style="background-color: var(--green-bg); color:var(--green-text)">Claim Valid<span class="step-indicator" style="background-color: #ba9ce0;">Step 3</span></button> <button id="resetButton" style="display: none; background-color: var(--secondary);">↻</button> <button class="button" data-action="RE" style="background-color: var(--warning-bg); color:var(--warning-text);">Rework <span class="step-indicator" style="background-color: #4a9be6;">Step 4</span></button> <button class="button" data-action="AP" style="background-color: var(--green-bg); color:var(--green-text)">Approve <span class="step-indicator" style="background-color: #4a9be6;">Step 4</span></button> <button class="button" data-action="CC" style="background-color: var(--red-bg); color:var(--red-text)">Close <span class="step-indicator" style="background-color: #69e6d5;">Step 5</span></button> <button class="button" data-action="FI" style="background-color: var(--green-bg); color:var(--green-text)">To be Finalized <span class="step-indicator" style="background-color: #69e6d5;">Step 5</span></button></div></div><div class="content decision-wrapper"><textarea id="xD" placeholder="Enter your decision and conclusion here..." readonly="readonly"></textarea><div id="xDO" placeholder="Decision overview will appear here..."></div></div></div></div><div class="right"><div class="box"><div class="title-bar"><span class="title">Output</span> <button class="copy-btn">Copy</button></div><div class="content output-wrapper"><div id="xOutput" contenteditable="true"><h1 contenteditable="false">IM Working on CCS Approvals</h1><h2 contenteditable="false">Step 1: Assessment</h2><div id="step1Content"></div><h2 contenteditable="false">Step 2: Findings</h2><div id="step2Content"></div><h2 contenteditable="false">Step 3: Decision</h2><div id="step3Content"></div><h2 contenteditable="false">Step 4: Claim Resolution Action</h2><div id="step4Content"></div><h2 contenteditable="false">Step 5: Next steps (If applicable)</h2><div id="step5Content"></div></div></div></div><div class="side"><div class="box"><div class="title-bar"><span class="title">Actions</span></div><div class="content action-buttons"><button style="height:50px;" id="logClaimBtn">Log Claim</button><div style="height:50px; font-size: 24px; text-align: center; border-radius: 12px;" id="timer">00:00</div><div id="timerSegments"><button id="timer.break">Break</button> <button id="timer.lunch">Lunch</button> <button id="timer.coaching">Coaching</button> <button id="timer.training">Training</button></div></div></div><div class="stats"><div class="box"><div class="title-bar"><span class="title">Hourly Goal Progress</span></div><div id="hourlyGoal" class="content"></div></div><div class="box"><div class="title-bar"><span class="title">Recent Claims</span><button id="allLogsBtn">All Logs</button></div><div id="recentClaims" class="content"></div></div></div></div></div></div><div id="logConfirmPopup" class="popup"><div class="popup-content"><h1>Are you sure you want to log this claim?</h1><br><confirmings><button id="confirmLogBtn">Confirm</button> <button id="cancelLogBtn">Cancel</button></confirmings></div></div><div id="detailedLogView" class="popup"><div class="popup-content"><h2>Detailed Log View</h2><div id="scenarioPieChart"></div><table id="logTable"><thead><tr><th>Date and Time</th><th>Claim Number</th><th>Claim Scenario</th><th>Handle Time</th><th>Notes</th><th>Action</th></tr></thead><tbody></tbody></table><button id="closeDetailedLogBtn">Close</button></div></div><button id="colorSchemeToggle" style="position: fixed; top: 20px; right: 20px; width: 30px; text-align: center;background-color: var(--accent); padding:0px">☀️</button><script type="module" src="front.js"></script><script>// Timer functionality
+        const timerElement = document.getElementById('timer');
+        const logClaimButton = document.getElementById('logClaimBtn');
+        const allLogsButton = document.getElementById('allLogsBtn');
+        const xInput = document.getElementById('xInput');
+        const clickToPasteOverlay = document.getElementById('clickToPasteOverlay');
+
+        let timerInterval, seconds = 0;
+        const maxSeconds = 7 * 60; // 7 minutes
+        let isPaused = false;
+
+        function startTimer() {
+        if (!timerInterval) {
+            timerInterval = setInterval(updateTimer, 1000);
+            timerElement.classList.add('active');
+            timerElement.classList.remove('paused');
+            isPaused = false;
+        }
+    }
+
+    function pauseTimer() {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        timerElement.classList.remove('active');
+        timerElement.classList.add('paused');
+        isPaused = true;
+    }
+
+    function stopTimer() {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        seconds = 0;
+        timerElement.textContent = '00:00';
+        timerElement.style.background = 'none';
+        timerElement.style.color = 'var(--text)';
+        timerElement.classList.remove('active', 'paused');
+        isPaused = false;
+    }
+
+    function updateTimer() {
+        seconds++;
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        timerElement.textContent = `${padZero(minutes)}:${padZero(remainingSeconds)}`;
+
+        const progress = (seconds / maxSeconds) * 100;
+
+        let gradientColor = '#90EE90'; // Light Green (initial color)
+        if (progress > 60) {
+            gradientColor = '#FFFF00'; // Yellow (from 60% to 100%)
+        }
+        if (seconds >= maxSeconds) {
+            gradientColor = '#FF0000'; // Red (at 100%)
+        }
+
+        timerElement.style.background = `linear-gradient(to right, ${gradientColor}, ${gradientColor} ${progress}%, var(--secondary) ${progress}%)`;
+        timerElement.style.boxShadow = `0 0 10px ${gradientColor}`;
+        timerElement.style.borderColor = gradientColor;
+
+        // Pulse animation every 5 seconds
+        if (seconds % 5 === 0) {
+            timerElement.classList.add('pulse');
+            setTimeout(() => {
+                timerElement.classList.remove('pulse');
+            }, 1000);
+        }
+    }
+
+    function padZero(num) {
+        return num.toString().padStart(2, '0');
+    }
+
+    // Event Listeners
+    clickToPasteOverlay.addEventListener('click', async () => {
+        try {
+            const text = await navigator.clipboard.readText();
+            xInput.value = text;
+            clickToPasteOverlay.style.display = 'none';
+            xInput.style.display = 'block';
+            startTimer(); // Start the timer when content is pasted
+        } catch (err) {
+            console.error('Failed to read clipboard contents: ', err);
+        }
+    });
+
+    timerElement.addEventListener('click', () => {
+        if (timerInterval) {
+            pauseTimer();
+        } else if (isPaused) {
+            startTimer();
+        }
+    });
+
+    allLogsButton.addEventListener('click', showAllLogs);
+
+    function showAllLogs() {
+    const logs = JSON.parse(localStorage.getItem('claimLogs')) || [];
+    const detailedLogView = document.getElementById('detailedLogView');
+    const logTable = document.getElementById('logTable');
+    
+    // Clear existing content
+    logTable.innerHTML = '';
+    
+    // Create table structure
+    const table = document.createElement('table');
+    const thead = document.createElement('thead');
+    const tbody = document.createElement('tbody');
+    
+    // Create table header
+    const headerRow = thead.insertRow();
+    ['Date', 'Claim Number', 'Scenario', 'Handle Time'].forEach(text => {
+        const th = document.createElement('th');
+        th.textContent = text;
+        headerRow.appendChild(th);
+    });
+    
+    // Populate table with log data
+    logs.forEach(log => {
+        const row = tbody.insertRow();
+        ['date', 'claimNumber', 'scenario', 'handleTime'].forEach(key => {
+            const cell = row.insertCell();
+            cell.textContent = log[key];
+        });
+    });
+    
+    // Assemble and insert the table
+    table.appendChild(thead);
+    table.appendChild(tbody);
+    logTable.appendChild(table);
+    
+    // Show the detailed log view
+    detailedLogView.style.display = 'block';
+}
+
+// Add this to your existing CSS
+const style = document.createElement('style');
+style.textContent = `
+    #timer {
+        transition: background 0.3s, box-shadow 0.3s, color 0.3s;
+    }
+    #timer.active {
+        color: var(--bg);
+    }
+    #timer.paused {
+        opacity: 0.7;
+    }
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+    #timer.pulse {
+        animation: pulse 0.5s ease-in-out;
+    }
+    #timer::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: inherit;
+        filter: blur(10px);
+        opacity: 0.7;
+        z-index: -1;
+        transition: opacity 0.3s;
+    }
+    #timer:hover::before {
+        opacity: 1;
+    }
+`;
+document.head.appendChild(style);</script><script>const buttonContainer = document.getElementById('buttonContainer');
+        const addButton = document.getElementById('addButton');
+        const gearButton = document.getElementById('gearButton');
+        const modal = document.getElementById('buttonModal');
+        const closeModal = document.getElementsByClassName('close')[0];
+        const saveButton = document.getElementById('saveButton'); 
+        const errorMessage = document.getElementById('errorMessage');
+
+        let buttons = JSON.parse(localStorage.getItem('buttons')) || []; 
+        let isEditing = false;
+        let currentButtonIndex = null;
+        
+
+        addButton.addEventListener('click', () => openModal());
+        gearButton.addEventListener('click', toggleEditMode);
+        closeModal.addEventListener('click', () => modal.style.display = 'none');
+        saveButton.addEventListener('click', handleSaveButtonClick);
+
+        function openModal(index = null) {
+            if (buttons.length >= 14 && index === null) {
+                showError('Maximum number of buttons reached');
+                return;
+            }
+            currentButtonIndex = index;
+            document.getElementById('modalTitle').textContent = index !== null ? 'Edit Button' : 'Add New Button';
+            if (index !== null) {
+                const button = buttons[index];
+                document.getElementById('buttonTitle').value = button.title;
+                document.getElementById('buttonContent').value = button.content;
+                document.getElementById('buttonColor').value = button.color;
+                document.getElementById('shortcutKey').value = button.shortcutKey;
+            } else {
+                document.getElementById('buttonTitle').value = '';
+                document.getElementById('buttonContent').value = '';
+                document.getElementById('buttonColor').value = '#EF4444';
+                document.getElementById('shortcutKey').value = 'Alt+1';
+            }
+            modal.style.display = 'block';
+        }
+
+        function handleSaveButtonClick() {
+            const title = document.getElementById('buttonTitle').value;
+            const content = document.getElementById('buttonContent').value;
+            const color = document.getElementById('buttonColor').value;
+            const shortcutKey = document.getElementById('shortcutKey').value;
+
+            if (!title || !content) {
+                showError('Please fill in all fields');
+                return;
+            }
+
+            if (currentButtonIndex !== null) {
+                buttons[currentButtonIndex] = { title, content, color, shortcutKey };
+            } else {
+                buttons.push({ title, content, color, shortcutKey });
+            }
+
+            // Save to local storage AFTER updating the buttons array
+            localStorage.setItem('buttons', JSON.stringify(buttons)); 
+
+            modal.style.display = 'none';
+            renderButtons();
+        }
+
+        function renderButtons() {
+            const fragment = document.createDocumentFragment();
+            buttons.forEach((button, index) => {
+                const buttonElement = document.createElement('button');
+                buttonElement.textContent = button.title;
+                buttonElement.className = 'shortcut-button';
+                buttonElement.style.backgroundColor = button.color;
+                buttonElement.addEventListener('click', () => sendToTextarea(button.content));
+
+                const editOverlay = document.createElement('span');
+                editOverlay.textContent = '✏️';
+                editOverlay.className = 'edit-overlay';
+                editOverlay.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    openModal(index);
+                });
+
+                const deleteOverlay = document.createElement('span');
+                deleteOverlay.textContent = '❌';
+                deleteOverlay.className = 'delete-overlay';
+                deleteOverlay.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    deleteButton(index);
+                });
+
+                buttonElement.appendChild(editOverlay);
+                buttonElement.appendChild(deleteOverlay);
+                fragment.appendChild(buttonElement);
+            });
+
+            while (buttonContainer.firstChild) {
+                buttonContainer.removeChild(buttonContainer.firstChild);
+            }
+            buttonContainer.appendChild(fragment);
+            buttonContainer.appendChild(addButton);
+            buttonContainer.appendChild(gearButton);
+        }
+
+        function sendToTextarea(content) {
+            const textarea = document.getElementById('xAnalysis'); 
+            textarea.value += content;  // Append the content
+        }
+
+        function toggleEditMode() {
+            isEditing = !isEditing;
+            document.querySelectorAll('.edit-overlay, .delete-overlay').forEach(el => {
+                el.style.display = isEditing ? 'block' : 'none';
+            });
+        }
+
+        function deleteButton(index) {
+            buttons.splice(index, 1);
+            // Save buttons to local storage after deletion
+            localStorage.setItem('buttons', JSON.stringify(buttons)); 
+            renderButtons();
+        }
+
+        function copyToClipboard(content) {
+            navigator.clipboard.writeText(content)
+                .then(() => console.log('Content copied to clipboard'))
+                .catch(err => showError('Failed to copy content: ' + err));
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            setTimeout(() => {
+                errorMessage.textContent = '';
+            }, 3000);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            const key = e.key.toLowerCase();
+            const alt = e.altKey;
+            buttons.forEach(button => {
+                const shortcutKeyLower = button.shortcutKey.toLowerCase();
+                if (
+                    (alt && shortcutKeyLower === `alt+${key}`) || 
+                    (!alt && shortcutKeyLower === key)
+                ) {
+                    sendToTextarea(button.content); // Update textarea directly
+                    e.preventDefault(); // Prevent default browser behavior for the key (optional)
+                }
+            });
+        });
+    
+        renderButtons();</script></body></html>
